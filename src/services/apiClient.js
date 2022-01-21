@@ -6,5 +6,4 @@ const apiClient = axios.create({
 });
 
 export default apiClient;
-
 // amount=20&category=13&difficulty=easy&type=multiple

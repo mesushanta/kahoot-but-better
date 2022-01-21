@@ -2,23 +2,27 @@ import {useState, useEffect} from "react";
 import Question from "../Question/Question";
 import Option from "../Option/Option";
 import axios from "axios";
+import CurrentQuestion from "../CurrentQuestion/CurrentQuestion";
 
 const Quiz = (props) => {
     const [percent, setPercent] = useState(5);
     const [questions, setQuestions] = useState([]);
     const [points, setpoints] = useState(0);
     const [rank, setRank] = useState(0);
-    const [number, setNumber] = useState(1);
-
+    const [current, setCurrent] = useState(1);
 
     useEffect(() => {
-        axios.get('https://opentdb.com/api.php?amount=20&difficulty=medium&type=multiple')
-            .then(resp => {
-                setQuestions(resp.data.results);
-            })
-            .catch(err => {
-                console.error(err);
-            });
+        const getQuestions = async () => {
+            try {
+                const res = await axios.get(
+                    `https://opentdb.com/api.php?amount=20&difficulty=medium&type=multiple&encode=base64`,
+                );
+                setQuestions(res.data.results);
+            } catch (e) {
+                console.log(e);
+            }
+        };
+        getQuestions();
     }, []);
 
     return (
@@ -40,13 +44,21 @@ const Quiz = (props) => {
             <div className="bg-sky-600 border border-sky-300 rounded-md shadow-xl w-full px-8 py-8">
 
                 <div className="max-w-screen-lg mx-auto">
-                    <Question question={questions[0].question } />
-                    <div className="grid grid-cols-2 gap-8">
-                        <Option option="Keaton" />
-                        <Option option="George Clooney" />
-                        <Option option="Val Kilmer" />
-                        <Option option="Christian Bale" />
-                    </div>
+                    {/*{questions.map((d,index) => (<CurrentQuestion key={index} question={d.question} current={current} />))}*/}
+
+                    { questions.map((d, idx) => {
+                        return (
+                            <CurrentQuestion
+                                key={idx}
+                                id={idx}
+                                question={atob(d.question)}
+                                correct={atob(d.correct_answer)}
+                                incorrect={d.incorrect_answers}
+                                current={current}
+                            />
+                        )}
+                    )}
+
 
                     <div className="w-full mt-20 mb-8 text-lg text-white font-thin">
                             You answer: Not chosen
