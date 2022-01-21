@@ -12,7 +12,6 @@ const CurrentQuestion = (props) => {
     }
 
     useEffect(() => {
-        console.log(atob(props.correct))
        props.incorrect.push(props.correct);
        setOption(shuffleArray(props.incorrect));
     }, []);

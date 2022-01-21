@@ -3,12 +3,11 @@ import axios from "axios";
 import CurrentQuestion from "../CurrentQuestion/CurrentQuestion";
 
 const Quiz = (props) => {
-    const [percent, setPercent] = useState(10);
     const [questions, setQuestions] = useState([]);
     const [points, setpoints] = useState(0);
     const [current, setCurrent] = useState(1);
     const [choice, setChoice] = useState(null);
-    const [progressbar, setProgressbar] = useState('w-[0%] h-2 rounded-full')
+    const [progressbar, setProgressbar] = useState('w-[100%] h-2 rounded-full bg-sky-500')
 
     const handleChoice = (param) => {
         setChoice(param);
@@ -17,11 +16,17 @@ const Quiz = (props) => {
     const handleSubmit = (params) => {
         setCurrent(current + 1);
         setpoints(points + params);
-        setPercent(props.amount);
+        let percent = (100/props.amount)*(current + 1);
+        let wcla = 'w-[' + percent +'%] h-2 rounded-full bg-sky-500';
+        console.log(wcla);
+        setProgressbar(wcla);
     }
 
     useEffect(() => {
-       let url = `https://opentdb.com/api.php?amount=${props.amount}&difficulty=medium&type=multiple&encode=base64`;
+        let percent = (100/props.amount)*(current);
+        let wcla = 'w-[' + percent +'%] h-2 rounded-full bg-sky-500';
+        setProgressbar(wcla);
+       let url = `https://opentdb.com/api.php?amount=${props.amount}&difficulty=${props.difficulty}&type=multiple&encode=base64`;
         const getQuestions = async () => {
             try {
                 const res = await axios.get(
